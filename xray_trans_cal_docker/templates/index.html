@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Transmission Calculator</title>
+    <!-- 引入 jQuery 库 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // 当文档加载完成后执行以下代码
+        $(document).ready(function () {
+            // 为所有具有 clear-on-focus 类的元素添加一个 focus 事件处理器
+            // 当这些元素获得焦点时，清空它们的值
+            $(".clear-on-focus").focus(function () {
+                $(this).val("");
+            });
+
+            // 为 ID 为 thickness 的元素添加一个 input 事件处理器
+            // 当这个元素的值发生变化时，执行以下代码
+            $("#thickness").on("input", function () {
+                $.ajax({
+                    url: "/update",
+                    type: "post",
+                    data: $("form").serialize(),
+                    success: function (data) {
+                        // 更新第一张图片的 src 属性
+                        $("#result1").attr("src", data.img_path_1);
+                        // 更新第二张图片的 src 属性
+                        $("#result2").attr("src", data.img_path_2);
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        /* 创建一个 flex 容器，使得其子元素可以水平排列 */
+        .container {
+            display: flex;
+        }
+
+        /* 控制图片的大小 */
+        .image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="display: flex; flex-direction: row;">
+            <form id="myForm" method="POST" onsubmit="event.preventDefault(); myFunction();">
+                <label for="chemical">Chemical:</label><br>
+                <input type="text" id="chemical" name="chemical" placeholder="H2O" class="clear-on-focus"><br>
+                <label for="density">Density (g/cm3):</label><br>
+                <input type="text" id="density" name="density" placeholder="1" class="clear-on-focus"><br>
+                <input type="range" id="density-slider" name="density-slider" min="0" max="30" value="1"
+                    class="slider clear-on-focus"><br>
+                <label for="thickness">Thickness (cm):</label><br>
+                <input type="text" id="thickness" name="thickness" placeholder="1" class="clear-on-focus"><br>
+                <input type="range" id="thickness-slider" name="thickness-slider" min="0" max="20" value="1"
+                    class="slider clear-on-focus"><br>
+                <label for="Emin">Emin (MeV):</label><br>
+                <input type="text" id="Emin" name="Emin" placeholder="0.1" class="clear-on-focus"><br>
+                <input type="range" id="Emin-slider" name="Emin-slider" min="0" max="20" value="0.1"
+                    class="slider clear-on-focus"><br>
+                <label for="Emax">Emax (MeV):</label><br>
+                <input type="text" id="Emax" name="Emax" placeholder="1" class="clear-on-focus"><br>
+                <input type="range" id="Emax-slider" name="Emax-slider" min="0" max="20" value="1"
+                    class="slider clear-on-focus"><br>
+                <label for="precision">Precision:</label><br>
+                <input type="text" id="precision" name="precision" placeholder="1000" class="clear-on-focus"><br>
+                <input type="range" id="precision-slider" name="precision-slider" min="0" max="2000"
+                    class="slider clear-on-focus"><br>
+                <input type="submit" value="Submit">
+            </form>
+            <script>
+    function myFunction() {
+        // 获取表单的数据
+        var chemical = document.getElementById('chemical').value;
+        var density = document.getElementById('density').value;
+        var thickness = document.getElementById('thickness').value;
+        var Emin = document.getElementById('Emin').value;
+        var Emax = document.getElementById('Emax').value;
+        var precision = document.getElementById('precision').value;
+
+        // 创建一个对象来存储这些数据
+        var data = {
+            'chemical': chemical,
+            'density': density,
+            'thickness': thickness,
+            'Emin': Emin,
+            'Emax': Emax,
+            'precision': precision
+        };
+
+        // 发送一个POST请求到服务器
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 获取图像元素
+            var img1 = document.getElementById('result1');
+            var img2 = document.getElementById('result2');
+
+            // 获取当前的时间戳
+            var timestamp = new Date().getTime();
+
+            // 更新图像的 src 属性
+            // img1.src = data.img_url_1 + '?t=' + timestamp;
+            // img2.src = data.img_url_2 + '?t=' + timestamp;
+            img1.src = "/static/images/transmission.png" + '?t=' + timestamp;
+            img2.src = "/static/images/μ_ρ.png" + '?t=' + timestamp;
+
+            // 显示图像
+            img1.style.display = 'block';
+            img2.style.display = 'block';
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+            </script>
+       </div>
+
+        <!-- 右边的图片 -->
+        <div>
+            <img id="result1" src="{{ img_url_1 }}" alt="Result" style="display: {% if img_url_1 %}block{% else %}none{% endif %}; margin-left: 20px;">
+            <img id="result2" src="{{ img_url_2 }}" alt="Result" style="display: {% if img_url_2 %}block{% else %}none{% endif %}; margin-left: 20px;">
+ 
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // 这里是你的代码
+        });
+    </script>
+
+    <!-- 省略了其他部分 -->
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#density-slider").on("input", function () {
+            $("#density").val(this.value);
+        });
+        $("#density").on("input", function () {
+            $("#density-slider").val(this.value);
+        });
+        $("#thickness-slider").on("input", function () {
+            $("#thickness").val(this.value);
+        });
+        $("#thickness").on("input", function () {
+            $("#thickness-slider").val(this.value);
+        });
+        $("#Emin-slider").on("input", function () {
+            $("#Emin").val(this.value);
+            $("#Emax-slider").attr("min", this.value);
+        });
+        $("#Emin").on("input", function () {
+            $("#Emin-slider").val(this.value);
+            $("#Emax-slider").attr("min", this.value);
+        });
+        $("#Emax-slider").on("input", function () {
+            $("#Emax").val(this.value);
+            $("#Emin-slider").attr("max", this.value);
+        });
+        $("#Emax").on("input", function () {
+            $("#Emax-slider").val(this.value);
+            $("#Emin-slider").attr("max", this.value);
+        });
+        $("#precision-slider").on("input", function () {
+            $("#precision").val(this.value);
+        });
+        $("#precision").on("input", function () {
+            $("#precision-slider").val(this.value);
+        });
+    });
+</script>
+
+</html>

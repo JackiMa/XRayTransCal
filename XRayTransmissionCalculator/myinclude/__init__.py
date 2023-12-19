@@ -1,0 +1,2 @@
+from .mypkgs import *
+
