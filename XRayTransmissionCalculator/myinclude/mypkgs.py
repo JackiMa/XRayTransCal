@@ -144,7 +144,7 @@ class ELEMENTS:
         μ_ρ, aux1, aux2 = self.get_compound_u_p(chemical, energy_lists)
         return np.exp(-μ_ρ * density * thickness)*100 # 转换成百分比
 
-    def draw_transmission(self, chemical, energy_lists, density, thickness, transmission_img_path=None, u_p_img_path=None):
+    def draw_transmission(self, chemical, energy_lists, density, thickness, transmission_img_path=None, u_p_img_path=None, data_path=None):
         
         compound_μ_ρ, ele_ratio, element_ratio_u_p_list = self.get_compound_u_p(chemical, energy_lists)
         transmission = np.exp(-compound_μ_ρ * density * thickness)*100
@@ -183,4 +183,21 @@ class ELEMENTS:
             plt.tight_layout()  # 自动调整子图参数
             plt.savefig(u_p_img_path, dpi=150)
             plt.close()
+
+        if data_path is not None:
+            # 创建一个 DataFrame 来保存数据
+            data = {
+                'Energy Lists': energy_lists,
+                'Transmission': transmission,
+                'Compound μ/ρ': compound_μ_ρ,
+            }
+
+            # 对于 element_ratio_u_p_list 中的每个元素，添加一个新的列到数据中
+            for i, element_ratio_u_p in enumerate(element_ratio_u_p_list):
+                data[f'Element μ/ρ: {ele_ratio[i][0]} {ele_ratio[i][1]}'] = element_ratio_u_p
+
+            df = pd.DataFrame(data)
+
+            # 将 DataFrame 保存到 CSV 文件
+            df.to_csv(data_path, index=False)
 

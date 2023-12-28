@@ -52,7 +52,7 @@
                 <label for="chemical">Chemical:</label><br>
                 <input type="text" id="chemical" name="chemical" placeholder="H2O" class="clear-on-focus"><br>
                 <label for="density">Density (g/cm3):</label><br>
-                <input type="text" id="density" name="density" placeholder="1" class="clear-on-focus"><br>
+                <input type="text" id="density" name="density" placeholder="1" min="0" class="clear-on-focus"><br>
                 <input type="range" id="density-slider" name="density-slider" min="0" max="30" value="1"
                     class="slider clear-on-focus"><br>
                 <label for="thickness">Thickness (cm):</label><br>
@@ -60,19 +60,22 @@
                 <input type="range" id="thickness-slider" name="thickness-slider" min="0" max="20" value="1"
                     class="slider clear-on-focus"><br>
                 <label for="Emin">Emin (MeV):</label><br>
-                <input type="text" id="Emin" name="Emin" placeholder="0.1" class="clear-on-focus"><br>
-                <input type="range" id="Emin-slider" name="Emin-slider" min="0" max="20" value="0.1"
+                <input type="text" id="Emin" name="Emin" placeholder="0.1" min="0.001" max="20" class="clear-on-focus"><br>
+                <input type="range" id="Emin-slider" name="Emin-slider" min="0.001" max="20" value="0.1"
                     class="slider clear-on-focus"><br>
                 <label for="Emax">Emax (MeV):</label><br>
-                <input type="text" id="Emax" name="Emax" placeholder="1" class="clear-on-focus"><br>
-                <input type="range" id="Emax-slider" name="Emax-slider" min="0" max="20" value="1"
+                <input type="text" id="Emax" name="Emax" placeholder="1" min="0.001" max="20" class="clear-on-focus"><br>
+                <input type="range" id="Emax-slider" name="Emax-slider" min="0.001" max="20" value="1"
                     class="slider clear-on-focus"><br>
                 <label for="precision">Precision:</label><br>
-                <input type="text" id="precision" name="precision" placeholder="1000" class="clear-on-focus"><br>
-                <input type="range" id="precision-slider" name="precision-slider" min="0" max="2000"
+                <input type="text" id="precision" name="precision" placeholder="3000" min="10" max="50000" class="clear-on-focus"><br>
+                <input type="range" id="precision-slider" name="precision-slider" min="0" max="50000"
                     class="slider clear-on-focus"><br>
                 <input type="submit" value="Submit">
-            </form>
+                <button onclick="downloadFiles()">Download</button> 
+                <!-- Due to a limitation, I cannot guarantee that this will work correctly when multiple users are accessing the site simultaneously. Therefore, users are advised to manually check whether they have downloaded the expected results. -->
+                
+                </form>
             <script>
     function myFunction() {
         // 获取表单的数据
@@ -124,6 +127,35 @@
             console.error('Error:', error);
         });
     }
+    function downloadFiles() {
+        // 创建两个新的隐藏的`a`元素
+        var downloadLink1 = document.createElement('a');
+        var downloadLink2 = document.createElement('a');
+
+        // 设置`href`属性为你想要下载的文件的URL
+        downloadLink1.href = '/static/data/data.csv';
+        downloadLink2.href = "/static/images/transmission.png";
+
+        // 设置`download`属性，这样当用户点击链接时，浏览器就会下载文件，而不是在新的标签页中打开它
+        downloadLink1.download = 'data.csv';
+        downloadLink2.download = 'transmission.png';
+
+        // 将`a`元素添加到页面中
+        document.body.appendChild(downloadLink1);
+        document.body.appendChild(downloadLink2);
+
+        // 模拟点击`a`元素，这将开始下载文件
+        downloadLink1.click();
+        downloadLink2.click();
+
+        // 在下载开始后，删除`a`元素
+        document.body.removeChild(downloadLink1);
+        document.body.removeChild(downloadLink2);
+
+        // 弹出提示
+        alert('Please check if the image is as expected. If not, please try again.');
+    }
+
             </script>
        </div>
 

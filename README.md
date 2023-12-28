@@ -48,3 +48,25 @@ XRayTransCalCloud is an open-source project, and contributions from the communit
 For more information, bug reports, or contributions, please visit the [GitHub repository](https://github.com/[YourGitHubUserName]/XRayTransCalCloud). 
 
 Your support and contributions make this project better for everyone. Thank you for using XRayTransCalCloud!
+
+## Docker Deployment
+
+Docker provides an easy way to package and distribute applications. Here are the steps to deploy this project using Docker:
+
+1. **Build the Docker image:** Navigate to the project directory and build the Docker image using the ***Dockerfile*** provided in the project. Replace `your-image-name` with the name you want to give to your Docker image.
+
+    ```bash
+    docker build -t your-image-name .
+    ```
+
+2. **Run the Docker container:** After the image is built, you can run the container. Replace `your-container-name` with the name you want to give to your Docker container, and `your-image-name` with the name of the Docker image you just built.
+
+    ```bash
+    docker run -d -p 9999:5000 --name your-container-name your-image-name
+    ```
+
+    This command will start the container and map the port 5000 of the container to the port 9999 of your host machine.
+
+3. **Access the application:** You can now access the application by navigating to `http://localhost:9999` in your web browser.
+
+Please note that these instructions assume that you have Docker installed on your machine. If you don't have Docker installed, you can download it from the [official Docker website](https://www.docker.com/get-started).
